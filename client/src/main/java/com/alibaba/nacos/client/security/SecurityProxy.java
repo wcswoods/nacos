@@ -60,8 +60,8 @@ public class SecurityProxy implements Closeable {
         if (clientAuthPluginManager.getAuthServiceSpiImplSet().isEmpty()) {
             return;
         }
-        for (ClientAuthService clientAuthService : clientAuthPluginManager.getAuthServiceSpiImplSet()) {
-            clientAuthService.login(properties);
+        for (ClientAuthService clientAuthService : clientAuthPluginManager.getAuthServiceSpiImplSet()) {// Remote、NacosClient
+            clientAuthService.login(properties);//
         }
     }
     

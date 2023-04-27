@@ -64,7 +64,7 @@ public class LocalConfigInfoProcessor {
     }
     
     public static String getFailover(String serverName, String dataId, String group, String tenant) {
-        File localPath = getFailoverFile(serverName, dataId, group, tenant);
+        File localPath = getFailoverFile(serverName, dataId, group, tenant);// user/nacos/config/fixed-localhost_8848/data/config-data/DEFAULT_GROUP/test
         if (!localPath.exists() || !localPath.isFile()) {
             return null;
         }
@@ -124,7 +124,7 @@ public class LocalConfigInfoProcessor {
         if (!SnapShotSwitch.getIsSnapShot()) {
             return;
         }
-        File file = getSnapshotFile(envName, dataId, group, tenant);
+        File file = getSnapshotFile(envName, dataId, group, tenant);//C:\Users\chuansen.wang\nacos\config\fixed-localhost_8848_nacos\snapshot\DEFAULT_GROUP\test
         if (null == config) {
             try {
                 IoUtils.delete(file);
@@ -189,7 +189,7 @@ public class LocalConfigInfoProcessor {
     }
     
     static File getFailoverFile(String serverName, String dataId, String group, String tenant) {
-        File tmp = new File(LOCAL_SNAPSHOT_PATH, serverName + SUFFIX);
+        File tmp = new File(LOCAL_SNAPSHOT_PATH, serverName + SUFFIX);// user/nacos/config/fixed-localhost_8848_nacos
         tmp = new File(tmp, FAILOVER_FILE_CHILD_1);
         if (StringUtils.isBlank(tenant)) {
             tmp = new File(tmp, FAILOVER_FILE_CHILD_2);

@@ -40,8 +40,8 @@ public class ConfigFilterChainManager implements IConfigFilterChain {
     
     public ConfigFilterChainManager(Properties properties) {
         this.initProperty = properties;
-        ServiceLoader<IConfigFilter> configFilters = ServiceLoader.load(IConfigFilter.class);
-        for (IConfigFilter configFilter : configFilters) {
+        ServiceLoader<IConfigFilter> configFilters = ServiceLoader.load(IConfigFilter.class);//
+        for (IConfigFilter configFilter : configFilters) {//ConfigEncryptionFilter
             addFilter(configFilter);
         }
     }

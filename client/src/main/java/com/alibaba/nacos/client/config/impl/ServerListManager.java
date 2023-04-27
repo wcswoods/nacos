@@ -184,7 +184,7 @@ public class ServerListManager implements Closeable {
     public ServerListManager(NacosClientProperties properties) throws NacosException {
         this.isStarted = false;
         this.serverAddrsStr = properties.getProperty(PropertyKeyConst.SERVER_ADDR);
-        String namespace = properties.getProperty(PropertyKeyConst.NAMESPACE);
+        String namespace = properties.getProperty(PropertyKeyConst.NAMESPACE);// 配置的命名空間，默认为“”
         initParam(properties);
         
         if (StringUtils.isNotBlank(namespace)) {
@@ -210,8 +210,8 @@ public class ServerListManager implements Closeable {
                     }
                 }
             }
-            this.serverUrls = serverAddrs;
-            this.name = initServerName(properties);
+            this.serverUrls = serverAddrs; // http://loaclhost:8848
+            this.name = initServerName(properties);//fixed_localhost_8848
             
         } else {
             if (StringUtils.isBlank(endpoint)) {
@@ -315,11 +315,11 @@ public class ServerListManager implements Closeable {
      * @throws NacosException nacos exception
      */
     public synchronized void start() throws NacosException {
-        
+        // 如果是固定的或者已经启动了，直接返回
         if (isStarted || isFixed) {
             return;
         }
-        
+        // 创建一个任务动态获取
         GetServerListTask getServersTask = new GetServerListTask(addressServerUrl);
         for (int i = 0; i < initServerlistRetryTimes && serverUrls.isEmpty(); ++i) {
             getServersTask.run();

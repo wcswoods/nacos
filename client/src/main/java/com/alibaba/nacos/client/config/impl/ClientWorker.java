@@ -164,6 +164,7 @@ public class ClientWorker implements Closeable {
             throws NacosException {
         group = blank2defaultGroup(group);
         String tenant = agent.getTenant();
+        // 每个dataId和group tenant --->CacheDate
         CacheData cache = addCacheDataIfAbsent(dataId, group, tenant);
         synchronized (cache) {
             for (Listener listener : listeners) {
@@ -416,7 +417,7 @@ public class ClientWorker implements Closeable {
         
         agent = new ConfigRpcTransportClient(properties, serverListManager);
         int count = ThreadUtils.getSuitableThreadCount(THREAD_MULTIPLE);
-        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(Math.max(count, MIN_THREAD_NUM),
+            ScheduledExecutorService executorService = Executors.newScheduledThreadPool(Math.max(count, MIN_THREAD_NUM),
                 r -> {
                     Thread t = new Thread(r);
                     t.setName("com.alibaba.nacos.client.Worker");
@@ -701,7 +702,7 @@ public class ClientWorker implements Closeable {
                         if (executor.isShutdown() || executor.isTerminated()) {
                             continue;
                         }
-                        executeConfigListen();
+                        executeConfigListen(); // 执行配置监听
                     } catch (Throwable e) {
                         LOGGER.error("[ rpc listen execute ] [rpc listen] exception", e);
                     }
@@ -779,12 +780,12 @@ public class ClientWorker implements Closeable {
                                 cacheData.getLastModifiedTs().longValue());
                     }
                     
-                    ConfigBatchListenRequest configChangeListenRequest = buildConfigRequest(listenCaches);
+                    ConfigBatchListenRequest configChangeListenRequest = buildConfigRequest(listenCaches);// 批量配置监听
                     configChangeListenRequest.setListen(true);
                     try {
                         RpcClient rpcClient = ensureRpcClient(taskId);
                         ConfigChangeBatchListenResponse configChangeBatchListenResponse = (ConfigChangeBatchListenResponse) requestProxy(
-                                rpcClient, configChangeListenRequest);
+                                rpcClient, configChangeListenRequest);// 获取变动的配置
                         if (configChangeBatchListenResponse.isSuccess()) {
                             
                             Set<String> changeKeys = new HashSet<>();
@@ -795,8 +796,8 @@ public class ClientWorker implements Closeable {
                                         : configChangeBatchListenResponse.getChangedConfigs()) {
                                     String changeKey = GroupKey.getKeyTenant(changeConfig.getDataId(),
                                             changeConfig.getGroup(), changeConfig.getTenant());
-                                    changeKeys.add(changeKey);
-                                    refreshContentAndCheck(changeKey);
+                                    changeKeys.add(changeKey);//changeKey=test+DEFAULT_GROUP
+                                    refreshContentAndCheck(changeKey); // 获取对应的配置，并根据md5判断是否刷新
                                 }
                                 
                             }
@@ -939,7 +940,7 @@ public class ClientWorker implements Closeable {
         }
         
         @Override
-        public ConfigResponse queryConfig(String dataId, String group, String tenant, long readTimeouts, boolean notify)
+        public ConfigResponse   queryConfig(String dataId, String group, String tenant, long readTimeouts, boolean notify)
                 throws NacosException {
             ConfigQueryRequest request = ConfigQueryRequest.build(dataId, group, tenant);
             request.putHeader(NOTIFY_HEADER, String.valueOf(notify));
@@ -969,7 +970,7 @@ public class ClientWorker implements Closeable {
                 configResponse.setEncryptedDataKey(encryptedDataKey);
                 return configResponse;
             } else if (response.getErrorCode() == ConfigQueryResponse.CONFIG_NOT_FOUND) {
-                LocalConfigInfoProcessor.saveSnapshot(this.getName(), dataId, group, tenant, null);
+                LocalConfigInfoProcessor.saveSnapshot(this.getName(), dataId, group, tenant, null);// 在本地保存了一份
                 LocalEncryptedDataKeyProcessor.saveEncryptDataKeySnapshot(agent.getName(), dataId, group, tenant, null);
                 return configResponse;
             } else if (response.getErrorCode() == ConfigQueryResponse.CONFIG_QUERY_CONFLICT) {

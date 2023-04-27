@@ -96,7 +96,7 @@ public class LocalEncryptedDataKeyProcessor extends LocalConfigInfoProcessor {
         if (!SnapShotSwitch.getIsSnapShot()) {
             return;
         }
-        File file = getEncryptDataKeySnapshotFile(envName, dataId, group, tenant);
+        File file = getEncryptDataKeySnapshotFile(envName, dataId, group, tenant);//C:\Users\chuansen.wang\nacos\config\fixed-localhost_8848_nacos\encrypted-data-key\snapshot\DEFAULT_GROUP\test
         try {
             if (null == encryptDataKey) {
                 try {

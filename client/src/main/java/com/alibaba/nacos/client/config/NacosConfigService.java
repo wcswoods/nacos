@@ -155,7 +155,7 @@ public class NacosConfigService implements ConfigService {
     }
     
     private String getConfigInner(String tenant, String dataId, String group, long timeoutMs) throws NacosException {
-        group = blank2defaultGroup(group);
+        group = blank2defaultGroup(group);// 爲空則爲默認分組
         ParamUtils.checkKeyParam(dataId, group);
         ConfigResponse cr = new ConfigResponse();
         
@@ -168,7 +168,7 @@ public class NacosConfigService implements ConfigService {
         // but is maintained by user.
         // This is designed for certain scenario like client emergency reboot,
         // changing config needed in the same time, while nacos server is down.
-        String content = LocalConfigInfoProcessor.getFailover(worker.getAgentName(), dataId, group, tenant);
+        String content = LocalConfigInfoProcessor.getFailover(worker.getAgentName(), dataId, group, tenant);// 檢查故障祝阿姨
         if (content != null) {
             LOGGER.warn("[{}] [get-config] get failover ok, dataId={}, group={}, tenant={}, config={}",
                     worker.getAgentName(), dataId, group, tenant, ContentUtils.truncateContent(content));

@@ -282,6 +282,7 @@ public class CacheData {
     void checkListenerMd5() {
         for (ManagerListenerWrap wrap : listeners) {
             if (!md5.equals(wrap.lastCallMd5)) {
+                // 配置内容变了，触发通知
                 safeNotifyListener(dataId, group, content, type, md5, encryptedDataKey, wrap);
             }
         }

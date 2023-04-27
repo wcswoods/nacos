@@ -73,16 +73,16 @@ public abstract class ConfigTransportClient {
         if (StringUtils.isBlank(encodeTmp)) {
             this.encode = Constants.ENCODE;
         } else {
-            this.encode = encodeTmp.trim();
+            this.encode = encodeTmp.trim();// UTF-8
         }
         
         this.tenant = properties.getProperty(PropertyKeyConst.NAMESPACE);
         this.serverListManager = serverListManager;
         this.properties = properties.asProperties();
-        this.securityProxy = new SecurityProxy(serverListManager.getServerUrls(),
+        this.securityProxy = new SecurityProxy(serverListManager.getServerUrls(),// 授权管理（认证和RestTemplate）
                 ConfigHttpClientManager.getInstance().getNacosRestTemplate());
     }
-    
+
     /**
      * Build the resource for current request.
      *
@@ -130,9 +130,9 @@ public abstract class ConfigTransportClient {
      * base start client.
      */
     public void start() throws NacosException {
-        securityProxy.login(this.properties);
+        securityProxy.login(this.properties);//登录
         this.executor.scheduleWithFixedDelay(() -> securityProxy.login(properties), 0,
-                this.securityInfoRefreshIntervalMills, TimeUnit.MILLISECONDS);
+                this.securityInfoRefreshIntervalMills, TimeUnit.MILLISECONDS);//定時登錄
         startInternal();
     }
     

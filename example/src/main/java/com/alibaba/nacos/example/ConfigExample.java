@@ -20,9 +20,11 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 import com.alibaba.nacos.api.NacosFactory;
+import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.Listener;
 import com.alibaba.nacos.api.exception.NacosException;
+import com.alibaba.nacos.sys.env.Constants;
 
 /**
  * Config service example.
@@ -36,6 +38,7 @@ public class ConfigExample {
         String dataId = "test";
         String group = "DEFAULT_GROUP";
         Properties properties = new Properties();
+        properties.put(PropertyKeyConst.NAMESPACE, "xpay");
         properties.put("serverAddr", serverAddr);
         ConfigService configService = NacosFactory.createConfigService(properties);
         String content = configService.getConfig(dataId, group, 5000);
